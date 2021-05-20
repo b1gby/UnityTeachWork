@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
     [SerializeField]
-    private int health = 100;
+    private float health = 100;
+
+    private float loss;
+
+    public bool isDamage = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,11 +24,28 @@ public class Health : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        isDamage = false;
     }
 
-    public void healthDamage(int damage)
+    public void healthDamage(float damage)
     {
         this.health -= damage;
+        this.loss = damage;
+        this.isDamage = true;
+        GameObject.Find("Slider").GetComponentInChildren<Slider>().value = health/100;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+    }
+
+    public float getHealth()
+    {
+        return health;
+    }
+
+    public float getLoss()
+    {
+        return loss;
+    }
 }

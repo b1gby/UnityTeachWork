@@ -11,8 +11,8 @@
 /[Uu]ser[Ss]ettings/
 
 # InstallPackage
-[Aa]ssets/[Ii]nstallPackage/
-[Aa]ssets/[Ii]nstallPackage.meta
+/[Aa]ssets/[Ii]nstallPackage/
+/[Aa]ssets/[Ii]nstallPackage.meta
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data

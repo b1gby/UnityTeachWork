@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerController : MonoBehaviour
 {
     
@@ -60,6 +61,10 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private Transform cameraTransform;
 
+    private float shootCoolDownTime = 0.1f;
+    private float shootTimeStamp = -2;
+
+    public int shootnum = 30;
 
 
     // Start is called before the first frame update
@@ -68,6 +73,7 @@ public class PlayerController : MonoBehaviour
         rd = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         cameraTransform = Camera.main.transform;
+        
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -135,17 +141,32 @@ public class PlayerController : MonoBehaviour
         }
 
         //开火检测
-        if(Input.GetButtonDown("Fire1"))
+        if(Input.GetButton("Fire1"))
         {
+            
             fire();
         }
         
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            Time.timeScale = 0;
+        }
+
+        if(shootnum <=0)
+        {
+            Invoke("Reload", 3);
+        }
+    }
+
+
+    void Reload()
+    {
+        shootnum = 30;
     }
 
     // 物理引擎
     private void FixedUpdate()
     {
-
         animator.SetBool("Grounded", isGrounded);
 
         movement();
@@ -216,16 +237,27 @@ public class PlayerController : MonoBehaviour
 
     void fire()
     {
-        RaycastHit hit;
-
-        if(Physics.Raycast(cameraTransform.position, cameraTransform.forward, 
-            out hit, 15f))
+        if(Time.time - shootTimeStamp >= shootCoolDownTime && shootnum>0)
         {
-            Debug.Log(hit.collider.name);
-            if(hit.collider.name != "Ground")
+            RaycastHit hit;
+
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward,
+                out hit, 15f))
             {
-                hit.collider.GetComponent<Health>().healthDamage(10);
+                if (hit.collider.name == "Cube")
+                {
+                    hit.collider.GetComponentInParent<Health>().healthDamage(5);
+                }
+                else if(hit.collider.name == "SpecialCube")
+                {
+                    hit.collider.GetComponentInParent<Health>().healthDamage(10);
+                }
             }
+
+            shootTimeStamp = Time.time;
+            shootnum--;
         }
+
+       
     }
 }
